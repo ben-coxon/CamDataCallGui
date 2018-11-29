@@ -1,0 +1,73 @@
+{
+	"Alexa 65" : {
+		"ARRIRAW" : {
+			"6560x3100" : {"file_size" : 30.724072, "max_fps" : 60},
+			"5120x2880" : {"file_size" : 22.344616, "max_fps" : 60},
+			"4320x2880" : {"file_size" : 18.882472, "max_fps" : 60},
+			"3840x2160" : {"file_size" : 12.661672, "max_fps" : 60},
+			"4448x3096" : {"file_size" : 20.876584, "max_fps" : 60}
+		},
+		"Pro-Res" : {
+		}
+	},
+	"Alexa LF" : {
+		"ARRIRAW" : {
+			"4448x3096" : {"file_size" : 20.876584, "max_fps" : 90},
+			"4448x1856" : {"file_size" : 12.603304, "max_fps" : 150},
+			"3840x2160" : {"file_size" : 12.661672, "max_fps" : 90}
+		},
+		"Pro-Res" : {
+
+		}
+	},
+	"Alexa SXT" : {
+		"ARRIRAW" : {
+			"2578x2160" : {"file_size" : 8.618152, "max_fps" : 96},
+			"2880x2160" : {"file_size" : 9.551272, "max_fps" : 96},
+			"3424x2202" : {"file_size" : 11.529544, "max_fps" : 90},
+			"3168x1782" : {"file_size" : 8.688136, "max_fps" : 120},
+			"2880x1620" : {"file_size" : 7.218472, "max_fps" : 120}
+		},
+		"Pro-Res": {
+
+		}
+	},
+	"Alexa XT" : {
+		"ARRIRAW" : {
+			"3414x2198" : {"file_size" : 11.3},
+			"2880x2160" : {"file_size" : 9.6},
+			"2578x2160" : {"file_size" : 8.6},
+			"2880x1620" : {"file_size" : 7.2}
+		}, 
+		"Pro-Res" : {
+		}
+	},
+	"Alexa Mini" : {
+		"ARRIRAW" : {
+			"2880x1620" : {"file_size" : 7.2, "max_fps" : 48}, 
+			"3424x2202" : {"file_size" : 11.5, "max_fps" : 30}
+		},
+		"Pro-Res 4444 XQ" : {
+			"1920x1080" : {"file_size" : 2.44, "max_fps" : 120}
+		}
+	}, 
+	"Canon C700" : {
+		"ARRIRAW" : {
+			"12-bit 4096x2160" : {"file_size" : 13.487}, 
+			"10-bit 4096x2160" : {"file_size" : 12.007}, 
+			"FF 10-bit 5952x2532" : {"file_size" : 20.347616},
+			"FF 10-bit 5952x3140" : {"file_size" : 25.187296}, 
+			"FF 12-bit 5932x3140" : {"file_size" : 28.318048}, 
+			"FF 12-bit 5952x2532" : {"file_size" : 22.875232}
+		}
+	}, 
+	"VRAW" : {
+		"ARRIRAW" : {
+			"12-bit 4096x2160" : {"file_size" : 13.275136},
+			"10-bit 4096x2160" : {"file_size" : 11.806336},
+			"10-bit 3840x2160" : {"file_size" : 11.063296}
+		}
+	}
+}
+
+
