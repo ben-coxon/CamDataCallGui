@@ -12,7 +12,7 @@ from PIL import Image, ImageTk
 
 
 
-VERSION = 1.06
+VERSION = 1.07
 
 units = {"kb":1024, "kiB":8192, "kB":8000, "Mb":1048576, "MiB":8388608, "MB":8000000, "Gb":1073741824, "GiB":8589934592, "GB":8000000000, "Tb":1099511627776, "TiB":8796093022208, "TB":8000000000000, "PB":8000000000000000}
 
@@ -148,6 +148,7 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
 		# SET Data Rate and Duration Info 
 		Label(self.root, text="				", bg="gray", fg="white").grid(row=(len(self.arri_cams) + 2), column=1, sticky=(N,W,E,S))
 		Label(self.root, text="				", bg="gray", fg="white").grid(row=(len(self.arri_cams) + 3), column=1, sticky=(N,W,E,S))
+		self.clear_fps() # set dummy value so it can be removed when switching views
 
 		
 		# Create Camera Radiobuttons
@@ -306,6 +307,28 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
 		self.data_size_label.grid_remove()
 		self.status_label.grid_remove()
 		self.dt_button.grid_remove()
+		self.fps_result_label.grid_remove()
+		try:
+			self.calc_dur_label.grid_remove()
+		except:
+			pass
+		try:
+			self.data_size_label.grid_remove()
+		except:
+			pass
+		try:
+			self.calc_dur_label.grid_remove()
+		except:
+			pass
+		try:
+			self.data_rate_label.grid_remove()
+		except:
+			pass
+		try:
+			self.fps_result_label.grid
+		except:
+			pass
+
 
 		self.start_dt_gui()
 
@@ -362,13 +385,19 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
 		frame_size = self.arri_cams[cam][mode][rez]["file_size"]
 		res = round((float(c_fps) * float(frame_size) / 1.0), 2)
 		result = "Data Rate is " + str(res) + " MB/s"
-		Label(self.root, text=result, bg="grey").grid(row=drate_but_row, column=1, sticky=(N,W,E,S))
+		self.data_rate_label = Label(self.root, text=result, bg="grey")
+		self.data_rate_label.grid(row=drate_but_row, column=1, sticky=(N,W,E,S))
 
 	#__________________________________________________________
 	## Duration Functions
 
-	# Calculate Duration in secs based on Data Size 
-	def dur_secs(self):
+	def duration(self):
+		self.error = None
+		self.status_update()
+		## Clear FPS Readout
+		self.clear_fps()
+		self.rez_error()  # check resolution is set
+
 		cam = self.cam_var.get()
 		rez = self.rez_choice.get()
 		mode = "ARRIRAW"
@@ -376,52 +405,150 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
 		d_size = self.dsize.get()
 		frame_size = self.arri_cams[cam][mode][rez]["file_size"]
 		bandwidth = float(frame_size) * float(c_fps)
-		f_size, unit, error = self.split_input(d_size)
-		if error:
-			self.error = error
+
+		### Set Split point
+		fs_split = d_size.find(" ")
+
+		### Test if first part of split is a number
+		try:
+			float(d_size[:fs_split])
+		except:
+			self.error = "Invalid entry for 'Data Size'"
 			self.status_update()
-		else:
-			file_size = f_size * self.units[unit]
-			secs = file_size / (bandwidth * self.units["MB"])
-			return secs
+			return
 
-	# and display result next to Duration box
-	def duration(self):
-		self.error = None
-		self.status_update()
-		## Clear FPS Readout
-		self.clear_fps()
+		### Split Digits from Units
+		f_size = float(d_size[:fs_split])
+		f_units = d_size[fs_split + 1:]
 
-		self.rez_error()  # check resolution is set
-		secs = self.dur_secs()
-		dur_but_row = len(self.arri_cams) + 4
+
+		### Validate Digits and Units
 		data_calc2 = Data_calculator()
+		if not data_calc2.valid_digit(f_size):
+			self.error = "Invalid entry for 'Data Size'"
+			self.status_update()
+			return
+		if not data_calc2.valid_unit(f_units):
+			self.error = "Invalid unit for 'Data Size'"
+			self.status_update()
+			return
+
+		# Make Calculations
+		file_size = f_size * self.units[f_units]
+	 	secs = file_size / (bandwidth * self.units["MB"])
+		dur_but_row = len(self.arri_cams) + 4
 		res, frac= data_calc2.convert_seconds(secs)
 		result = str(res) + " " + str(int(float(frac) * float(self.fps.get()))) + " fr"
-		Label(self.root, text=result, bg="grey").grid(row=dur_but_row, column=1, sticky=(N,W,E,S))
+		self.calc_dur_label = Label(self.root, text=result, bg="grey")
+		self.calc_dur_label.grid(row=dur_but_row, column=1, sticky=(N,W,E,S))
+
+
+	def split_input(self, d_size):
+		fs_split = d_size.find(" ")
+
+		### Test if first part of split is a number
+		try:
+			float(d_size[:fs_split])
+		except:
+			self.error = "Invalid entry for 'Data Size'"
+			self.status_update()
+			return
+
+		### Split Digits from Units
+		f_size = float(d_size[:fs_split])
+		f_units = d_size[fs_split + 1:]
+
+
+		### Validate Digits and Units
+		data_calc2 = Data_calculator()
+		if not data_calc2.valid_digit(f_size):
+			self.error = "Invalid entry for 'Data Size'"
+			self.status_update()
+			return
+		if not data_calc2.valid_unit(f_units):
+			self.error = "Invalid unit for 'Data Size'"
+			self.status_update()
+			return
+
+		return f_size, f_units
+
+
+
+	# # Calculate Duration in secs based on Data Size 
+	# def dur_secs(self):
+	# 	cam = self.cam_var.get()
+	# 	rez = self.rez_choice.get()
+	# 	mode = "ARRIRAW"
+	# 	c_fps = self.fps.get()
+	# 	d_size = self.dsize.get()
+	# 	frame_size = self.arri_cams[cam][mode][rez]["file_size"]
+	# 	bandwidth = float(frame_size) * float(c_fps)
+
+	# 	if self.split_input(d_size):
+	# 		f_size, unit, error = self.split_input(d_size)
+	# 	else:
+	# 		return False
+
+	# 	if error:
+	# 		self.error = error
+	# 		self.status_update()
+
+	# 	else:
+	# 		file_size = f_size * self.units[unit]
+	# 		secs = file_size / (bandwidth * self.units["MB"])
+	# 		return secs
+
+	# # and display result next to Duration box
+	# def duration(self):
+	# 	self.error = None
+	# 	self.status_update()
+	# 	## Clear FPS Readout
+	# 	self.clear_fps()
+
+	# 	self.rez_error()  # check resolution is set
+
+	# 	secs = self.dur_secs()
+	# 	dur_but_row = len(self.arri_cams) + 4
+	# 	data_calc2 = Data_calculator()
+	# 	res, frac= data_calc2.convert_seconds(secs)
+	# 	result = str(res) + " " + str(int(float(frac) * float(self.fps.get()))) + " fr"
+	# 	Label(self.root, text=result, bg="grey").grid(row=dur_but_row, column=1, sticky=(N,W,E,S))
 
 	def clear_dur(self):
 		dur_but_row = len(self.arri_cams) + 4
 		Label(self.root, text="                              ", bg="grey").grid(row=dur_but_row, column=1, sticky=(N,W,E,S))
 
-	# Split the Data Size input in value and unit	
-	def split_input(self, fs):
-		data_calc2 = Data_calculator()
-		fs_split = fs.find(" ")
-		try:
-			float(fs[:fs_split])
-		except:
-			self.error = "Invalid entry for 'Data Size'"
-			self.status_update()
-		file_size = float(fs[:fs_split])
-		f_units = fs[fs_split + 1:]
-		if not data_calc2.valid_digit(file_size):
-			self.error = "Invalid entry for 'Data Size'"
-			self.status_update()
-		if not data_calc2.valid_unit(f_units):
-			self.error = "Invalid unit for 'Data Size'"
-			self.status_update()
-		return file_size, f_units
+	# # Split the Data Size input in value and unit	
+	# def split_input(self, fs):
+	# 	data_calc2 = Data_calculator()
+	# 	fs_split = fs.find(" ")
+	# 	error = False
+	# 	try:
+	# 		float(fs[:fs_split])
+	# 	except:
+	# 		self.error = "Invalid entry for 'Data Size'"
+	# 		self.status_update()
+	# 		error = True
+	# 		return False
+	# 	file_size = float(fs[:fs_split])
+	# 	f_units = fs[fs_split + 1:]
+	# 	if not data_calc2.valid_digit(file_size):
+	# 		self.error = "Invalid entry for 'Data Size'"
+	# 		self.status_update()
+	# 		error = True
+	# 		return False
+	# 	if not data_calc2.valid_unit(f_units):
+	# 		self.error = "Invalid unit for 'Data Size'"
+	# 		self.status_update()
+	# 		error = True
+	# 		return False
+	# 	return file_size, f_units, error
+
+
+
+
+	#_________________________________________________________
+	## SPLIT DATA TOOLS
 
 	# Split the Data Size input in value and unit	
 	def split_input_dt(self, fs):
@@ -485,7 +612,8 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
 
 		## Display result next to "Data Size" button	
 		data_but_row = len(self.arri_cams) + 5
-		Label(self.root, text=result, bg="grey").grid(row=data_but_row, column=1, sticky=(N,W,E,S))
+		self.data_size_label = Label(self.root, text=result, bg="grey")
+		self.data_size_label.grid(row=data_but_row, column=1, sticky=(N,W,E,S))
 
 	def clear_dsize(self):
 		data_but_row = len(self.arri_cams) + 5
@@ -552,17 +680,7 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
  		self.error = None # Reset error
 		self.status_update()
 		self.rez_error()  # check resolution is set
-		self.validate_dur_string()
-		secs, frames = self.convert_time()		
-		file_size, unit = self.split_input(self.dsize.get())
-		frame_size = self.arri_cams[self.cam_var.get()]["ARRIRAW"][self.rez_choice.get()]["file_size"]  # Get Frame Size from Camera Dict
-		data_calc2 = Data_calculator()
-		fs_in_mb = data_calc2.convert_unit(file_size, unit, "MB") + (float(frame_size) * float(frames))
-
-		mb_per_sec = fs_in_mb / secs
-		num_frames = fs_in_mb / frame_size
-		return (num_frames / secs), mb_per_sec
-
+	
 
 
 
@@ -570,21 +688,43 @@ setting the Camera and Resolution, setting the FPS to the log readout and clicki
  	def fps_from_data_dur(self):
  		self.error = None
 		self.status_update()
-
 		self.clear_dur() # Clear Duration readout
 		self.clear_dsize() # Clear Data Size readout
-
 		self.rez_error()  # check resolution is set
-		fps, mb_per_sec = self.calc_fps()
+
+		## Validate Duration
+		if not self.validate_dur_string(self.dur.get()):
+			self.error = "Invalid Duration!"
+			self.status_update()
+			return 
+		
+		secs, frames = self.convert_time()	
+
+		## Validtae Data Size
+		if not self.split_input(self.dsize.get()):
+			return
+
+		## Calculate FPS
+		file_size, unit = self.split_input(self.dsize.get())
+		frame_size = self.arri_cams[self.cam_var.get()]["ARRIRAW"][self.rez_choice.get()]["file_size"]  # Get Frame Size from Camera Dict
+		data_calc2 = Data_calculator()
+		fs_in_mb = data_calc2.convert_unit(file_size, unit, "MB") + (float(frame_size) * float(frames))
+		mb_per_sec = fs_in_mb / secs
+		num_frames = fs_in_mb / frame_size
+		fps, mb_per_sec = (num_frames / secs), mb_per_sec
 		if len(str(fps)) >= 5:  # Round FPS to 2 decimal places
 			fps = round(fps,2)
 		fps = str(fps)
 		result = fps + " FPS (" + str(round(mb_per_sec, 2)) + " MB/s)"
 
-		Label(self.root, text=result, bg="grey", fg="black").grid(row=8, column=1, sticky=(N,W,E,S))
+		self.fps_result_label = Label(self.root, text=result, bg="grey", fg="black")
+		self.fps_result_label.grid(row=8, column=1, sticky=(N,W,E,S))
 
+
+	## Clear FPS Function	
 	def clear_fps(self):
-		Label(self.root, text="         ", bg="grey", fg="black").grid(row=8, column=1, sticky=(N,W,E,S))
+		self.fps_result_label = Label(self.root, text="         ", bg="grey", fg="black")
+		self.fps_result_label.grid(row=8, column=1, sticky=(N,W,E,S))
 
 
 
