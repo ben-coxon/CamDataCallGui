@@ -1,0 +1,35 @@
+2019-01-27 19:24:29,797 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-01-27 19:25:49,225 ERROR: Exception on /edit_profile [GET] [in /Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask/app.py:1761]
+Traceback (most recent call last):
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/flask_login/utils.py", line 261, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/benc/Documents/CODE/notes_blog/app/routes.py", line 105, in edit_profile
+    form = EditProfileForm()
+  File "/Users/benc/Documents/CODE/notes_blog/venv/lib/python2.7/site-packages/wtforms/form.py", line 212, in __call__
+    return type.__call__(cls, *args, **kwargs)
+TypeError: __init__() takes at least 2 arguments (1 given)
+2019-01-27 19:28:02,259 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-07 20:30:22,696 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-07 20:32:12,988 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-07 20:32:24,551 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-08 17:31:23,664 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-08 17:38:41,396 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-08 18:05:00,914 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-08 21:17:54,288 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-21 16:10:09,945 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-21 16:10:34,540 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-21 18:54:14,576 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-21 18:54:44,570 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-21 18:55:27,457 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-21 18:55:35,796 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
+2019-02-22 10:20:45,164 INFO: BensTechNotes startup [in /Users/benc/Documents/CODE/notes_blog/app/__init__.py:50]
